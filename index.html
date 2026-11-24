@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Special Birthday Edition • 25 Nov 2026</title>
+
+  <!-- Google Fonts: Oswald (Sporty/Maskulin) & Inter (Bersih & Mudah Dibaca) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            pitchBlack: "#090A0F",
+            charcoal: "#13151D",
+            muRed: "#DA291C",
+            muRedDark: "#9E1B12",
+            muGold: "#FBE122",
+            steel: "#9CA3AF",
+            offWhite: "#F3F4F6"
+          },
+          fontFamily: {
+            sport: ["Oswald", "sans-serif"],
+            sans: ["Inter", "sans-serif"]
+          },
+          keyframes: {
+            floatSlow: {
+              "0%, 100%": { transform: "translateY(0px)" },
+              "50%": { transform: "translateY(-6px)" }
+            },
+            pulseGlow: {
+              "0%, 100%": { boxShadow: "0 0 0 0 rgba(218, 41, 28, 0.5)" },
+              "50%": { boxShadow: "0 0 24px 4px rgba(218, 41, 28, 0.45)" }
+            },
+            shakeShort: {
+              "0%, 100%": { transform: "translateX(0)" },
+              "20%": { transform: "translateX(-6px)" },
+              "40%": { transform: "translateX(6px)" },
+              "60%": { transform: "translateX(-4px)" },
+              "80%": { transform: "translateX(4px)" }
+            }
+          },
+          animation: {
+            "float-slow": "floatSlow 3.2s ease-in-out infinite",
+            "pulse-glow": "pulseGlow 2.4s infinite",
+            "shake-short": "shakeShort 0.38s ease-in-out"
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    body {
+      background-color: #090A0F;
+      color: #F3F4F6;
+      font-family: "Inter", sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Latar Belakang Tekstur Stadion & Sorotan Lampu Merah-Emas */
+    .stadium-bg {
+      background-image:
+        radial-gradient(circle at 50% 0%, rgba(218, 41, 28, 0.24) 0%, transparent 58%),
+        radial-gradient(circle at 85% 85%, rgba(251, 225, 34, 0.08) 0%, transparent 45%),
+        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
+    }
+
+    .glass-card {
+      background: rgba(19, 21, 29, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75);
+    }
+
+    /* Transisi Antar Halaman */
+    .step-active {
+      display: block;
+      animation: fadeSlideIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .step-hidden {
+      display: none;
+    }
+
+    @keyframes fadeSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Animasi Bar Equalizer Musik */
+    .eq-bar {
+      width: 4px;
+      border-radius: 9999px;
+      background: linear-gradient(to top, #DA291C, #FBE122);
+      transition: height 0.2s ease;
+    }
+
+    .eq-playing .eq-bar {
+      animation: eqBounce 0.7s ease-in-out infinite alternate;
+    }
+
+    .eq-playing .eq-bar:nth-child(2) { animation-delay: 0.15s; }
+    .eq-playing .eq-bar:nth-child(3) { animation-delay: 0.3s; }
+    .eq-playing .eq-bar:nth-child(4) { animation-delay: 0.1s; }
+    .eq-playing .eq-bar:nth-child(5) { animation-delay: 0.25s; }
+    .eq-playing .eq-bar:nth-child(6) { animation-delay: 0.4s; }
+    .eq-playing .eq-bar:nth-child(7) { animation-delay: 0.2s; }
+
+    @keyframes eqBounce {
+      0% { height: 6px; }
+      100% { height: 28px; }
+    }
+  </style>
+</head>
+<body class="stadium-bg min-h-screen relative selection:bg-muRed selection:text-white">
+
+  <!-- Canvas Confetti Perayaan -->
+  <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-40 w-full h-full"></canvas>
+
+  <!-- Floating Audio Controller (Muncul di Halaman 2 & 3) -->
+  <div
+    id="floating-audio-bar"
+    class="fixed bottom-4 right-4 z-30 hidden items-center gap-2.5 bg-charcoal/95 border border-white/15 px-3.5 py-2 rounded-full shadow-2xl backdrop-blur-md"
+  >
+    <button
+      id="floating-play-btn"
+      type="button"
+      class="w-8 h-8 rounded-full bg-muRed hover:bg-muRedDark text-white flex items-center justify-center text-xs transition cursor-pointer"
+      title="Play / Pause"
+    >
+      <span id="floating-play-icon">⏸</span>
+    </button>
+    <div class="text-left pr-1">
+      <p class="text-[11px] font-sport uppercase tracking-wider text-white leading-tight">Happy Birthday</p>
+      <p id="floating-status-text" class="text-[10px] text-muGold leading-tight">Sedang Diputar</p>
+    </div>
+    <button
+      id="floating-mute-btn"
+      type="button"
+      class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-xs transition cursor-pointer"
+      title="Mute / Unmute"
+    >
+      🔊
+    </button>
+  </div>
+
+  <main class="relative z-10 min-h-screen w-full flex flex-col items-center justify-center px-4 py-10 sm:px-6">
+
+    <!-- ===================================================================
+         HALAMAN 1: LOBBY COUNTDOWN SCOREBOARD (TERKUNCI HINGGA 25 NOV 2026)
+         =================================================================== -->
+    <section id="step-1" class="step-active w-full max-w-xl mx-auto">
+      <div class="glass-card border border-white/10 rounded-3xl p-6 sm:p-10 text-center relative overflow-hidden">
+        <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-muRed via-muGold to-muRed"></div>
+
+        <!-- Badge Status -->
+        <div
+          id="countdown-status-badge"
+          class="inline-flex items-center gap-2 bg-muRed/20 border border-muRed/50 px-3.5 py-1.5 rounded-full mb-5"
+        >
+          <span class="w-2 h-2 rounded-full bg-muGold animate-ping"></span>
+          <span id="countdown-status-text" class="text-[11px] font-sport uppercase tracking-widest text-muGold font-semibold">
+            SPECIAL DAY COUNTDOWN
+          </span>
+        </div>
+
+        <p class="text-xs font-sport uppercase tracking-[0.25em] text-steel mb-1">SPECIAL BIRTHDAY EDITION</p>
+        <h1 class="font-sport text-3xl sm:text-5xl font-bold uppercase tracking-tight text-white mb-2">
+          FOR <span id="lobby-recipient-name" class="text-muGold">My Beloved Boyfie</span>
+        </h1>
+        <p id="target-date-label" class="text-[11px] font-sport uppercase tracking-widest text-steel/80 mb-6">
+          CELEBRATION SCHEDULE: 25 NOVEMBER 2026 • 00:00
+        </p>
+
+        <!-- Old Trafford Scoreboard Countdown -->
+        <div class="grid grid-cols-4 gap-2 sm:gap-3 bg-pitchBlack/90 border border-white/10 rounded-2xl p-3 sm:p-4 mb-6 shadow-inner">
+          <div class="bg-charcoal/90 border border-white/5 rounded-xl py-3 px-1">
+            <span id="cd-days" class="font-sport text-2xl sm:text-4xl font-bold text-white block leading-none">00</span>
+            <span class="text-[10px] font-sport uppercase tracking-widest text-muGold mt-1.5 block">DAYS</span>
+          </div>
+          <div class="bg-charcoal/90 border border-white/5 rounded-xl py-3 px-1">
+            <span id="cd-hours" class="font-sport text-2xl sm:text-4xl font-bold text-white block leading-none">00</span>
+            <span class="text-[10px] font-sport uppercase tracking-widest text-muGold mt-1.5 block">HOURS</span>
+          </div>
+          <div class="bg-charcoal/90 border border-white/5 rounded-xl py-3 px-1">
+            <span id="cd-mins" class="font-sport text-2xl sm:text-4xl font-bold text-white block leading-none">00</span>
+            <span class="text-[10px] font-sport uppercase tracking-widest text-muGold mt-1.5 block">MINS</span>
+          </div>
+          <div class="bg-charcoal/90 border border-muRed/40 rounded-xl py-3 px-1">
+            <span id="cd-secs" class="font-sport text-2xl sm:text-4xl font-bold text-muRed block leading-none">00</span>
+            <span class="text-[10px] font-sport uppercase tracking-widest text-steel mt-1.5 block">SECS</span>
+          </div>
+        </div>
+
+        <p id="lobby-helper-text" class="text-steel text-xs sm:text-sm max-w-md mx-auto leading-relaxed mb-6">
+          Terbuka otomatis hingga tepat pukul 00:00 25 November 2026.
+        </p>
+
+        <!-- Wrapper Tombol Utama KICK OFF -->
+        <div id="kickoff-wrapper" class="w-full">
+          <button
+            id="btn-kickoff"
+            type="button"
+            disabled
+            class="w-full inline-flex items-center justify-center gap-3 bg-charcoal text-steel font-sport uppercase tracking-wider text-base sm:text-lg px-7 py-4 rounded-xl border border-white/15 cursor-not-allowed opacity-85 transition-all duration-300"
+          >
+            <span id="btn-kickoff-text">LOCKED UNTIL 25 NOV 2026 • 00:00</span>
+            <span id="btn-kickoff-icon" class="text-muGold text-xl">🔒</span>
+          </button>
+        </div>
+
+        <!-- Notifikasi Toast Peringatan Saat Diklik Sebelum Jam 00:00 -->
+        <div
+          id="lock-toast"
+          class="mt-3 hidden items-center justify-center gap-2 bg-muRed/20 border border-muRed/50 text-muGold text-xs sm:text-sm font-medium px-4 py-2.5 rounded-xl"
+        >
+          <span>🔒</span>
+          <span>Sabar dulu Bro! Celebration dimulai tepat jam 00:00 tanggal 25 Nov 2026.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         HALAMAN 2: PERAYAAN HBD & AUTO-PLAY LAGU HAPPY BIRTHDAY
+         =================================================================== -->
+    <section id="step-2" class="step-hidden w-full max-w-xl mx-auto">
+      <div class="glass-card border border-muRed/40 rounded-3xl p-6 sm:p-10 text-center relative overflow-hidden">
+        <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-muGold via-muRed to-muGold"></div>
+
+        <!-- Nomor Punggung / Umur -->
+        <div class="inline-flex flex-col items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-b from-muRed to-muRedDark border-2 border-muGold shadow-lg shadow-muRed/30 mb-5 animate-float-slow">
+          <span class="text-[9px] font-sport uppercase tracking-widest text-muGold/90">PLAYER NO.</span>
+          <span id="jersey-number-display" class="font-sport text-4xl sm:text-5xl font-bold text-white leading-none">24</span>
+        </div>
+
+        <p class="text-xs font-sport uppercase tracking-[0.25em] text-muGold mb-1">IT'S OFFICIAL • FULL TIME CELEBRATION</p>
+        <h2 class="font-sport text-3xl sm:text-5xl font-bold uppercase tracking-tight text-white mb-2">
+          HAPPY BIRTHDAY, <span id="hbd-recipient-name" class="text-muRed">My Bloved Boyfie</span>!
+        </h2>
+        <p class="text-steel text-xs sm:text-sm mb-6">
+          Semoga di usiamu kali ini penuh kebahagiaan, kesehatan, dan pencapaian luar biasa!
+        </p>
+
+        <!-- Kartu Pemutar Lagu "Happy Birthday To You" -->
+        <div class="bg-charcoal/95 border border-white/10 rounded-2xl p-5 mb-6 text-left">
+          <div class="flex items-center justify-between gap-3 mb-3.5">
+            <div class="flex items-center gap-3">
+              <div
+                id="anthem-disc"
+                class="w-12 h-12 rounded-full bg-gradient-to-tr from-muRed via-muRedDark to-pitchBlack border-2 border-muGold flex items-center justify-center shrink-0 shadow-md animate-spin"
+                style="animation-duration: 6s;"
+              >
+                <span class="text-lg">🎂</span>
+              </div>
+              <div>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-muGold block">
+                  NOW PLAYING CELEBRATION TUNE
+                </span>
+                <h3 class="font-sport text-lg sm:text-xl font-semibold text-white tracking-wide">
+                  Happy Birthday To You
+                </h3>
+              </div>
+            </div>
+
+            <!-- Bar Audio Visualizer Animasi -->
+            <div id="eq-container" class="eq-playing flex items-end gap-1 h-9 px-1.5" aria-hidden="true">
+              <span class="eq-bar h-3"></span>
+              <span class="eq-bar h-6"></span>
+              <span class="eq-bar h-4"></span>
+              <span class="eq-bar h-7"></span>
+              <span class="eq-bar h-3"></span>
+              <span class="eq-bar h-5"></span>
+              <span class="eq-bar h-4"></span>
+            </div>
+          </div>
+
+          <!-- Banner Ucapan Ulang Tahun -->
+          <div class="bg-pitchBlack/80 border-l-4 border-muRed rounded-r-xl px-4 py-3 mb-4">
+            <p class="font-sport italic text-sm sm:text-base text-offWhite tracking-wide">
+              "Happy Birthday to You! Wishing you all the best!" 🔴⚪🟡
+            </p>
+          </div>
+
+          <!-- Kontrol Play/Pause & Burst Confetti -->
+          <div class="flex items-center justify-between gap-2">
+            <button
+              id="btn-toggle-anthem"
+              type="button"
+              class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/15 text-white text-xs sm:text-sm font-semibold px-4 py-2 rounded-lg transition cursor-pointer"
+            >
+              <span id="anthem-btn-icon">⏸️</span>
+              <span id="anthem-btn-text">pause sound</span>
+            </button>
+
+            <button
+              id="btn-burst-hbd"
+              type="button"
+              class="inline-flex items-center gap-1.5 bg-white/10 hover:text-white text-xs sm:text-sm font-semibold px-3 py-2 rounded-lg transition cursor-pointer"
+            >
+              <!-- <span>🎉</span> -->
+              <span>🎉🎉🎉🎉🎉</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tombol Lanjut ke Halaman 3 -->
+        <button
+          id="btn-to-letter"
+          type="button"
+          class="w-full inline-flex items-center justify-center gap-3 bg-gradient-to-r from-muRed to-muRedDark hover:from-muRedDark hover:to-muRed text-white font-sport uppercase tracking-wider text-base sm:text-lg px-8 py-4 rounded-xl border border-muGold/50 shadow-lg shadow-muRed/25 transition-all duration-300 hover:scale-[1.02] active:scale-95 cursor-pointer"
+        >
+          <span>READ BIRTHDAY LETTER</span>
+          <span class="text-muGold text-xl">→</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         HALAMAN 3: SURAT UCAPAN ULANG TAHUN & GALERI FOTO KENANGAN
+         =================================================================== -->
+    <section id="step-3" class="step-hidden w-full max-w-3xl mx-auto pb-16">
+      <!-- Kartu Surat Ucapan -->
+      <div class="glass-card border border-white/10 rounded-3xl p-6 sm:p-10 mb-8 relative overflow-hidden">
+        <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-muRed via-muGold to-muRed"></div>
+
+        <div class="flex items-center justify-between gap-3 mb-6 pb-4 border-b border-white/10">
+          <div>
+            <span class="text-[11px] font-sport uppercase tracking-widest text-muGold block">SMALL MESSAGE FOR YOU</span>
+            <h2 id="letter-title-display" class="font-sport text-2xl sm:text-3xl font-bold text-white mt-0.5">
+              Happy Birthday, My Beloved Boyfie! 🔴⚽
+            </h2>
+          </div>
+          <button
+            id="btn-back-hbd"
+            type="button"
+            class="text-xs font-sport uppercase tracking-wider text-steel hover:text-white bg-white/5 hover:bg-white/10 px-3.5 py-2 rounded-lg border border-white/10 transition cursor-pointer shrink-0"
+          >
+            ← Back
+          </button>
+        </div>
+
+        <!-- Kontainer Paragraf Surat dengan Animasi Ketik -->
+        <div id="letter-body-container" class="space-y-4 text-offWhite/90 text-sm sm:text-base leading-relaxed min-h-[140px]"></div>
+
+        <div class="mt-8 pt-4 border-t border-white/10 flex items-center justify-between">
+          <span id="letter-sender-display" class="font-sport uppercase tracking-wider text-sm text-muGold font-semibold">
+            Dari Sahabatmu • GGMU ✊
+          </span>
+          <button
+            id="btn-replay-letter"
+            type="button"
+            class="text-xs text-steel hover:text-muGold underline transition cursor-pointer"
+          >
+            Replay Message
+          </button>
+        </div>
+      </div>
+
+
+    </section>
+
+  </main>
+
+  <!-- Modal Lightbox Foto -->
+  <div
+    id="photo-modal"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/90 backdrop-blur-md p-4"
+  >
+    <div class="relative max-w-2xl w-full bg-charcoal border border-white/15 rounded-2xl overflow-hidden shadow-2xl">
+      <button
+        id="btn-close-modal"
+        type="button"
+        class="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-black/70 hover:bg-muRed text-white flex items-center justify-center transition cursor-pointer"
+        aria-label="Tutup foto"
+      >
+        ✕
+      </button>
+      <img
+        id="modal-img"
+        src=""
+        alt="Preview foto kenangan"
+        class="w-full max-h-[72vh] object-contain bg-pitchBlack"
+      />
+      <div class="p-4 flex items-center justify-between gap-3 bg-charcoal border-t border-white/10">
+        <p id="modal-caption" class="font-sport text-base text-white tracking-wide"></p>
+        <span id="modal-date" class="text-xs font-sport uppercase tracking-widest text-muGold shrink-0"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       ELEMEN AUDIO MP3 (Opsional jika ingin memakai file MP3 sendiri)
+       ===================================================================== -->
+  <audio id="anthem-audio" preload="auto" loop></audio>
+
+  <!-- =====================================================================
+       SCRIPT UTAMA & KONFIGURASI MUDAH
+       ===================================================================== -->
+  <script>
+    /**
+     * =========================================================================
+     * 1. KONFIGURASI UTAMA (UBAH DATA DI SINI SEBELUM DEPLOY KE VERCEL!)
+     * =========================================================================
+     */
+    const BIRTHDAY_CONFIG = {
+      // Nama penerima ucapan ulang tahun
+      recipientName: "My Beloved Boyfie",
+
+      // Angka umur / nomor punggung favorit
+      jerseyNumber: "25",
+
+      // Tanggal & jam target ulang tahun: 25 November 2026 pukul 00:00:00
+      targetDate: "2026-11-25T00:00:00",
+
+      // TRUE = Tombol terkunci ketat sampai hitungan mundur mencapai 00:00:00:00
+      lockUntilZero: false,
+
+      // Opsional: Path file MP3 lagu Happy Birthday (jika tidak ada, otomatis pakai melodi bawaan)
+      audioSrc: "./happy-birthday.mp3",
+
+      // Judul & isi surat ucapan ulang tahun (array paragraf)
+      letterTitle: "Happy Birthday, My Beloved Boyfie!",
+      letterContent: [
+        "Selamat ulang tahun, sayang. Semoga di usia yang baru ini kamu semakin kuat menghadapi segala hal, semakin dekat dengan semua impianmu, dan semakin bahagia dengan kehidupan yang kamu jalani",
+        "Aku tahu perjalanan hidup tidak selalu mudah, ada banyak hal yang mungkin harus kamu perjuangkan sendiri. Tapi aku harap kamu tahu bahwa ada aku yang selalu mendukungmu dan percaya sama kemampuanmu.",
+        "Aku tidak berharap hubungan kita selalu sempurna, tapi aku berharap kita selalu punya alasan untuk bertahan, saling memahami, dan memilih satu sama lain setiap harinya. Semoga aku masih punya banyak kesempatan untuk mengucapkan selamat ulang tahun kepadamu di tahun-tahun berikutnya. ❤️",
+        "Your happy smile brightens my day",
+      "Sometimes you may feel tired and weary" , "But I will always be by your side","Through every day, I’ll be there for you" ,"I love you, thank you for being born"
+      ],
+      senderName: "Dari ur gf • GGMU HIDUP JOKKKwi✊",
+
+      // Daftar foto kenangan (bisa diganti link foto atau file lokal di folder Vercel)
+      photos: [
+        {
+          url: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&w=800&q=80",
+          caption: "MATCHDAY VIBES • OLD TRAFFORD SPIRIT",
+          date: "25 NOV 2026"
+        },
+        {
+          url: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80",
+          caption: "BROTHERHOOD & GOOD TIMES",
+          date: "SQUAD GOALS"
+        },
+        {
+          url: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80",
+          caption: "CHAMPIONSHIP FEAST NIGHT",
+          date: "CELEBRATION"
+        },
+        {
+          url: "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=800&q=80",
+          caption: "ALWAYS AIMING FOR THE TROPHY",
+          date: "NEW SEASON"
+        }
+      ]
+    };
+
+    /**
+     * =========================================================================
+     * 2. INISIALISASI DATA KE ELEMEN HTML
+     * =========================================================================
+     */
+    function initPageContent() {
+      const nameTargets = [
+        document.getElementById("lobby-recipient-name"),
+        document.getElementById("hbd-recipient-name")
+      ];
+      nameTargets.forEach((el) => {
+        if (el) el.textContent = BIRTHDAY_CONFIG.recipientName;
+      });
+
+      const jerseyEl = document.getElementById("jersey-number-display");
+      if (jerseyEl) jerseyEl.textContent = BIRTHDAY_CONFIG.jerseyNumber;
+
+      const titleEl = document.getElementById("letter-title-display");
+      if (titleEl) titleEl.textContent = BIRTHDAY_CONFIG.letterTitle;
+
+      const senderEl = document.getElementById("letter-sender-display");
+      if (senderEl) senderEl.textContent = BIRTHDAY_CONFIG.senderName;
+    }
+
+    /**
+     * =========================================================================
+     * 3. REAL-TIME MATCHDAY COUNTDOWN SCOREBOARD & AUTO-LOCK (HALAMAN 1)
+     * =========================================================================
+     */
+    function startMatchdayCountdown() {
+      const daysEl = document.getElementById("cd-days");
+      const hoursEl = document.getElementById("cd-hours");
+      const minsEl = document.getElementById("cd-mins");
+      const secsEl = document.getElementById("cd-secs");
+
+      const statusBadge = document.getElementById("countdown-status-badge");
+      const statusText = document.getElementById("countdown-status-text");
+      const dateLabel = document.getElementById("target-date-label");
+      const helperText = document.getElementById("lobby-helper-text");
+
+      const kickoffBtn = document.getElementById("btn-kickoff");
+      const kickoffText = document.getElementById("btn-kickoff-text");
+      const kickoffIcon = document.getElementById("btn-kickoff-icon");
+
+      const targetMs = new Date(BIRTHDAY_CONFIG.targetDate).getTime();
+
+      if (!isNaN(targetMs)) {
+        dateLabel.textContent = "CELEBRATION SCHEDULE: 25 NOVEMBER 2026 • 00:00";
+      }
+
+      function padZero(num) {
+        return String(Math.max(0, num)).padStart(2, "0");
+      }
+
+      function setButtonLocked(locked) {
+        if (locked) {
+          kickoffBtn.disabled = true;
+          kickoffBtn.classList.remove("bg-muRed", "hover:bg-muRedDark", "animate-pulse-glow", "cursor-pointer", "hover:scale-[1.02]", "active:scale-95");
+          kickoffBtn.classList.add("bg-charcoal", "text-steel", "border-white/15", "cursor-not-allowed", "opacity-85");
+          kickoffText.textContent = "LOCKED UNTIL 25 NOV 2026 • 00:00";
+          kickoffIcon.textContent = "🔒";
+          helperText.textContent = "Terbuka otomatis tepat pukul 00:00 tanggal 25 November 2026.";
+        } else {
+          kickoffBtn.disabled = false;
+          kickoffBtn.classList.remove("bg-charcoal", "text-steel", "border-white/15", "cursor-not-allowed", "opacity-85");
+          kickoffBtn.classList.add("bg-muRed", "hover:bg-muRedDark", "animate-pulse-glow", "cursor-pointer", "hover:scale-[1.02]", "active:scale-95");
+          kickoffText.textContent = "OPEN CELEBRATION";
+          kickoffIcon.textContent = " SAYANGGGKUU PENDII";
+        }
+      }
+
+      function updateTimer() {
+        const now = Date.now();
+        const diff = targetMs - now;
+
+        if (isNaN(targetMs) || diff <= 0) {
+          daysEl.textContent = "00";
+          hoursEl.textContent = "00";
+          minsEl.textContent = "00";
+          secsEl.textContent = "00";
+
+          statusBadge.classList.remove("bg-muRed/20", "border-muRed/50");
+          statusBadge.classList.add("bg-muGold/20", "border-muGold", "animate-pulse");
+          statusText.textContent = "IT'S MATCHDAY! TIME HAS ARRIVED";
+          dateLabel.textContent = "25 NOVEMBER 2026 • 00:00 — FULL TIME!";
+          helperText.textContent = "Waktunya tiba! Klik tombol di bawah untuk memulai perayaan & menyalakan lagu ulang tahun!";
+
+          setButtonLocked(false);
+          return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const mins = Math.floor((diff / (1000 * 60)) % 60);
+        const secs = Math.floor((diff / 1000) % 60);
+
+        daysEl.textContent = padZero(days);
+        hoursEl.textContent = padZero(hours);
+        minsEl.textContent = padZero(mins);
+        secsEl.textContent = padZero(secs);
+
+        setButtonLocked(Boolean(BIRTHDAY_CONFIG.lockUntilZero));
+      }
+
+      updateTimer();
+      setInterval(updateTimer, 1000);
+    }
+
+    /**
+     * =========================================================================
+     * 4. MESIN AUDIO: MP3 + FALLBACK SYNTHESIZER NADA "HAPPY BIRTHDAY TO YOU"
+     * =========================================================================
+     */
+    class BirthdayAudioController {
+      constructor() {
+        this.isPlaying = false;
+        this.isMuted = false;
+        this.useSynthFallback = false;
+        this.audioCtx = null;
+        this.masterGain = null;
+        this.synthTimer = null;
+        this.audioEl = document.getElementById("anthem-audio");
+
+        if (BIRTHDAY_CONFIG.audioSrc && BIRTHDAY_CONFIG.audioSrc.trim() !== "") {
+          this.audioEl.src = BIRTHDAY_CONFIG.audioSrc.trim();
+          this.audioEl.addEventListener("error", () => {
+            this.useSynthFallback = true;
+            if (this.isPlaying) this.startSynthLoop();
+          });
+        } else {
+          this.useSynthFallback = true;
+        }
+      }
+
+      getHappyBirthdayNotes() {
+        const N = {
+          C4: 261.63,
+          D4: 293.66,
+          E4: 329.63,
+          F4: 349.23,
+          G4: 392.00,
+          A4: 440.00,
+          Bb4: 466.16,
+          C5: 523.25
+        };
+
+        return [
+          [N.C4, null, 0.75], [N.C4, null, 0.25],
+          [N.D4, N.F4, 1.0],  [N.C4, N.F4, 1.0],  [N.F4, N.A4, 1.0],  [N.E4, N.G4, 2.0],
+
+          [N.C4, null, 0.75], [N.C4, null, 0.25],
+          [N.D4, N.G4, 1.0],  [N.C4, N.E4, 1.0],  [N.G4, N.Bb4, 1.0], [N.F4, N.A4, 2.0],
+
+          [N.C4, null, 0.75], [N.C4, null, 0.25],
+          [N.C5, N.F4, 1.0],  [N.A4, N.F4, 1.0],  [N.F4, N.D4, 1.0],  [N.E4, N.C4, 1.0], [N.D4, N.Bb4 * 0.5, 2.0],
+
+          [N.Bb4, null, 0.75], [N.Bb4, null, 0.25],
+          [N.A4, N.F4, 1.0],   [N.F4, N.C4, 1.0],  [N.G4, N.E4, 1.0],  [N.F4, N.A4, 2.5]
+        ];
+      }
+
+      playChimeNote(freq, harmonyFreq, startTime, duration) {
+        if (!this.audioCtx || !this.masterGain) return;
+
+        const oscMain = this.audioCtx.createOscillator();
+        const oscOvertone = this.audioCtx.createOscillator();
+        const noteGain = this.audioCtx.createGain();
+        const overtoneGain = this.audioCtx.createGain();
+
+        oscMain.type = "triangle";
+        oscOvertone.type = "sine";
+        oscMain.frequency.setValueAtTime(freq, startTime);
+        oscOvertone.frequency.setValueAtTime(freq * 2, startTime);
+
+        overtoneGain.gain.setValueAtTime(0.08, startTime);
+        noteGain.gain.setValueAtTime(0.001, startTime);
+        noteGain.gain.exponentialRampToValueAtTime(0.26, startTime + 0.03);
+        noteGain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+        oscMain.connect(noteGain);
+        oscOvertone.connect(overtoneGain);
+        overtoneGain.connect(noteGain);
+        noteGain.connect(this.masterGain);
+
+        oscMain.start(startTime);
+        oscOvertone.start(startTime);
+        oscMain.stop(startTime + duration + 0.05);
+        oscOvertone.stop(startTime + duration + 0.05);
+
+        if (harmonyFreq) {
+          const oscHarm = this.audioCtx.createOscillator();
+          const harmGain = this.audioCtx.createGain();
+          oscHarm.type = "sine";
+          oscHarm.frequency.setValueAtTime(harmonyFreq, startTime);
+
+          harmGain.gain.setValueAtTime(0.001, startTime);
+          harmGain.gain.exponentialRampToValueAtTime(0.11, startTime + 0.05);
+          harmGain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+          oscHarm.connect(harmGain);
+          harmGain.connect(this.masterGain);
+          oscHarm.start(startTime);
+          oscHarm.stop(startTime + duration + 0.05);
+        }
+      }
+
+      startSynthLoop() {
+        if (!this.isPlaying) return;
+        if (!this.audioCtx) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          this.audioCtx = new AudioContextClass();
+          this.masterGain = this.audioCtx.createGain();
+          this.masterGain.gain.setValueAtTime(this.isMuted ? 0 : 1, this.audioCtx.currentTime);
+          this.masterGain.connect(this.audioCtx.destination);
+        }
+        if (this.audioCtx.state === "suspended") {
+          this.audioCtx.resume();
+        }
+
+        const beatSec = 0.42;
+        let now = this.audioCtx.currentTime + 0.05;
+        const melody = this.getHappyBirthdayNotes();
+
+        melody.forEach(([freq, harmFreq, beats]) => {
+          const dur = beats * beatSec;
+          this.playChimeNote(freq, harmFreq, now, dur * 0.94);
+          now += dur;
+        });
+
+        const loopDelay = (now - this.audioCtx.currentTime + 0.6) * 1000;
+        this.synthTimer = setTimeout(() => {
+          if (this.isPlaying) this.startSynthLoop();
+        }, loopDelay);
+      }
+
+      play() {
+        if (this.isPlaying) return;
+        this.isPlaying = true;
+        updateAudioUI(true, this.isMuted);
+
+        if (!this.useSynthFallback && this.audioEl.src) {
+          this.audioEl.muted = this.isMuted;
+          this.audioEl.play().catch(() => {
+            this.useSynthFallback = true;
+            this.startSynthLoop();
+          });
+        } else {
+          this.startSynthLoop();
+        }
+      }
+
+      pause() {
+        this.isPlaying = false;
+        clearTimeout(this.synthTimer);
+        if (this.audioEl && !this.audioEl.paused) {
+          this.audioEl.pause();
+        }
+        if (this.audioCtx && this.audioCtx.state === "running") {
+          this.audioCtx.suspend();
+        }
+        updateAudioUI(false, this.isMuted);
+      }
+
+      togglePlay() {
+        if (this.isPlaying) {
+          this.pause();
+        } else {
+          this.play();
+        }
+      }
+
+      toggleMute() {
+        this.isMuted = !this.isMuted;
+        if (this.audioEl) {
+          this.audioEl.muted = this.isMuted;
+        }
+        if (this.masterGain && this.audioCtx) {
+          this.masterGain.gain.setValueAtTime(this.isMuted ? 0 : 1, this.audioCtx.currentTime);
+        }
+        updateAudioUI(this.isPlaying, this.isMuted);
+      }
+    }
+
+    const anthemPlayer = new BirthdayAudioController();
+
+    /**
+     * =========================================================================
+     * 5. NAVIGASI HALAMAN & SINKRONISASI KONTROL AUDIO
+     * =========================================================================
+     */
+    const eqContainer = document.getElementById("eq-container");
+    const anthemDisc = document.getElementById("anthem-disc");
+    const anthemBtnIcon = document.getElementById("anthem-btn-icon");
+    const anthemBtnText = document.getElementById("anthem-btn-text");
+
+    const floatingAudioBar = document.getElementById("floating-audio-bar");
+    const floatingPlayIcon = document.getElementById("floating-play-icon");
+    const floatingStatusText = document.getElementById("floating-status-text");
+    const floatingMuteBtn = document.getElementById("floating-mute-btn");
+
+    function updateAudioUI(playing, muted) {
+      if (playing && !muted) {
+        eqContainer.classList.add("eq-playing");
+        anthemDisc.style.animationPlayState = "running";
+      } else {
+        eqContainer.classList.remove("eq-playing");
+        anthemDisc.style.animationPlayState = "paused";
+      }
+
+      if (playing) {
+        anthemBtnIcon.textContent = "⏸️";
+        anthemBtnText.textContent = "Jeda Musik";
+        floatingPlayIcon.textContent = "⏸";
+        floatingStatusText.textContent = muted ? "Mode Bisukan" : "Sedang Diputar";
+      } else {
+        anthemBtnIcon.textContent = "▶️";
+        anthemBtnText.textContent = "Putar Musik";
+        floatingPlayIcon.textContent = "▶";
+        floatingStatusText.textContent = "Musik Dijeda";
+      }
+
+      floatingMuteBtn.textContent = muted ? "🔇" : "🔊";
+    }
+
+    function switchStep(fromEl, toEl) {
+      if (!fromEl || !toEl) return;
+      fromEl.classList.remove("step-active");
+      fromEl.classList.add("step-hidden");
+
+      setTimeout(() => {
+        toEl.classList.remove("step-hidden");
+        toEl.classList.add("step-active");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }, 220);
+    }
+
+    function enterCelebrationPage() {
+      const s1 = document.getElementById("step-1");
+      const s2 = document.getElementById("step-2");
+      anthemPlayer.play();
+      switchStep(s1, s2);
+      if (floatingAudioBar) {
+        floatingAudioBar.classList.remove("hidden");
+        floatingAudioBar.classList.add("flex");
+      }
+      launchConfetti(150);
+    }
+
+    // HALAMAN 1 -> HALAMAN 2 (Hanya bisa masuk jika waktu sudah 25/11/2026 00:00)
+    const kickoffBtnEl = document.getElementById("btn-kickoff");
+    const kickoffWrapperEl = document.getElementById("kickoff-wrapper");
+    const lockToastEl = document.getElementById("lock-toast");
+    let toastTimer = null;
+
+    kickoffWrapperEl.addEventListener("click", () => {
+      if (kickoffBtnEl.disabled) {
+        kickoffWrapperEl.classList.remove("animate-shake-short");
+        void kickoffWrapperEl.offsetWidth;
+        kickoffWrapperEl.classList.add("animate-shake-short");
+
+        lockToastEl.classList.remove("hidden");
+        lockToastEl.classList.add("flex");
+
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          lockToastEl.classList.add("hidden");
+          lockToastEl.classList.remove("flex");
+        }, 3500);
+        return;
+      }
+
+      enterCelebrationPage();
+    });
+
+    // Kontrol Audio di Halaman 2 & Floating Bar
+    document.getElementById("btn-toggle-anthem").addEventListener("click", () => anthemPlayer.togglePlay());
+    document.getElementById("floating-play-btn").addEventListener("click", () => anthemPlayer.togglePlay());
+    document.getElementById("floating-mute-btn").addEventListener("click", () => anthemPlayer.toggleMute());
+    document.getElementById("btn-burst-hbd").addEventListener("click", () => launchConfetti(140));
+
+    // HALAMAN 2 -> HALAMAN 3
+    document.getElementById("btn-to-letter").addEventListener("click", () => {
+      const s2 = document.getElementById("step-2");
+      const s3 = document.getElementById("step-3");
+      switchStep(s2, s3);
+      renderLetterWithAnimation();
+      launchConfetti(80);
+    });
+
+    // HALAMAN 3 -> KEMBALI KE HALAMAN 2
+    document.getElementById("btn-back-hbd").addEventListener("click", () => {
+      const s3 = document.getElementById("step-3");
+      const s2 = document.getElementById("step-2");
+      switchStep(s3, s2);
+    });
+
+    /**
+     * =========================================================================
+     * 6. ANIMASI KETIK SURAT UCAPAN & GALERI FOTO KENANGAN (HALAMAN 3)
+     * =========================================================================
+     */
+    let letterTypingTimers = [];
+
+    function renderLetterWithAnimation() {
+      letterTypingTimers.forEach((id) => clearTimeout(id));
+      letterTypingTimers = [];
+
+      const container = document.getElementById("letter-body-container");
+      container.innerHTML = "";
+
+      let cumulativeDelay = 150;
+
+      BIRTHDAY_CONFIG.letterContent.forEach((paragraphText) => {
+        const p = document.createElement("p");
+        p.className = "opacity-0 translate-y-2 transition-all duration-500";
+        container.appendChild(p);
+
+        const revealTimer = setTimeout(() => {
+          p.classList.remove("opacity-0", "translate-y-2");
+          let charIdx = 0;
+          const typeInterval = setInterval(() => {
+            p.textContent = paragraphText.slice(0, charIdx + 1);
+            charIdx++;
+            if (charIdx >= paragraphText.length) {
+              clearInterval(typeInterval);
+            }
+          }, 16);
+          letterTypingTimers.push(typeInterval);
+        }, cumulativeDelay);
+
+        letterTypingTimers.push(revealTimer);
+        cumulativeDelay += Math.min(paragraphText.length * 16 + 250, 2600);
+      });
+    }
+
+    document.getElementById("btn-replay-letter").addEventListener("click", () => {
+      renderLetterWithAnimation();
+    });
+
+    function buildPhotoGallery() {
+      const grid = document.getElementById("photo-gallery-grid");
+      const modal = document.getElementById("photo-modal");
+      const modalImg = document.getElementById("modal-img");
+      const modalCaption = document.getElementById("modal-caption");
+      const modalDate = document.getElementById("modal-date");
+      const closeModalBtn = document.getElementById("btn-close-modal");
+
+      grid.innerHTML = "";
+
+      BIRTHDAY_CONFIG.photos.forEach((photo) => {
+        const card = document.createElement("div");
+        card.className =
+          "group relative bg-pitchBlack border border-white/10 hover:border-muGold/60 rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-lg";
+
+        card.innerHTML = `
+          <div class="aspect-[4/3] w-full overflow-hidden bg-charcoal">
+            <img
+              src="${photo.url}"
+              alt="${photo.caption}"
+              loading="lazy"
+              onerror="this.src='https://placehold.co/800x600/13151D/FBE122?text=MATCHDAY+MEMORY'"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+          </div>
+          <div class="p-3.5 bg-gradient-to-t from-pitchBlack via-charcoal to-charcoal/90 border-t border-white/5 flex items-center justify-between gap-2">
+            <p class="font-sport text-sm text-white tracking-wide truncate">${photo.caption}</p>
+            <span class="text-[10px] font-sport uppercase tracking-widest text-muGold bg-muRed/20 border border-muRed/40 px-2 py-0.5 rounded shrink-0">
+              ${photo.date}
+            </span>
+          </div>
+        `;
+
+        card.addEventListener("click", () => {
+          modalImg.src = photo.url;
+          modalCaption.textContent = photo.caption;
+          modalDate.textContent = photo.date;
+          modal.classList.remove("hidden");
+          modal.classList.add("flex");
+        });
+
+        grid.appendChild(card);
+      });
+
+      closeModalBtn.addEventListener("click", () => {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      });
+
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          modal.classList.add("hidden");
+          modal.classList.remove("flex");
+        }
+      });
+    }
+
+    /**
+     * =========================================================================
+     * 7. EFEK CONFETTI MERAH, EMAS & PUTIH
+     * =========================================================================
+     */
+    const confettiCanvas = document.getElementById("confetti-canvas");
+    const confettiCtx = confettiCanvas.getContext("2d");
+    let confettiParticles = [];
+    let confettiAnimId = null;
+
+    function resizeConfettiCanvas() {
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+    }
+
+    window.addEventListener("resize", resizeConfettiCanvas);
+    resizeConfettiCanvas();
+
+    function launchConfetti(count = 120) {
+      const palette = ["#DA291C", "#FBE122", "#FFFFFF", "#B91C1C"];
+
+      for (let i = 0; i < count; i++) {
+        confettiParticles.push({
+          x: confettiCanvas.width * 0.5 + (Math.random() - 0.5) * 260,
+          y: confettiCanvas.height * 0.45,
+          vx: (Math.random() - 0.5) * 14,
+          vy: Math.random() * -13 - 4,
+          size: Math.random() * 7 + 4,
+          color: palette[Math.floor(Math.random() * palette.length)],
+          rotation: Math.random() * 360,
+          rotSpeed: (Math.random() - 0.5) * 10,
+          gravity: 0.28 + Math.random() * 0.1,
+          drag: 0.985,
+          opacity: 1
+        });
+      }
+
+      if (!confettiAnimId) {
+        animateConfetti();
+      }
+    }
+
+    function animateConfetti() {
+      confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+      confettiParticles.forEach((p) => {
+        p.vx *= p.drag;
+        p.vy = p.vy * p.drag + p.gravity;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rotation += p.rotSpeed;
+
+        if (p.y > confettiCanvas.height - 60) {
+          p.opacity -= 0.025;
+        }
+
+        confettiCtx.save();
+        confettiCtx.globalAlpha = Math.max(0, p.opacity);
+        confettiCtx.translate(p.x, p.y);
+        confettiCtx.rotate((p.rotation * Math.PI) / 180);
+        confettiCtx.fillStyle = p.color;
+        confettiCtx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+        confettiCtx.restore();
+      });
+
+      confettiParticles = confettiParticles.filter(
+        (p) => p.opacity > 0 && p.y < confettiCanvas.height + 40
+      );
+
+      if (confettiParticles.length > 0) {
+        confettiAnimId = requestAnimationFrame(animateConfetti);
+      } else {
+        confettiAnimId = null;
+      }
+    }
+
+    // Jalankan semua inisialisasi saat halaman siap
+    window.addEventListener("DOMContentLoaded", () => {
+      initPageContent();
+      startMatchdayCountdown();
+      buildPhotoGallery();
+    });
+  </script>
+</body>
+</html>
